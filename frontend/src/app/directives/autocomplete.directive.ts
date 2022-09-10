@@ -98,7 +98,7 @@ export class AutocompleteDirective implements OnChanges {
       }
     }
 
-    console.log(event);
+
 
 
     if (event.keyCode == KEY_SPACE && !this.autocompleteOpen) {
@@ -152,7 +152,7 @@ export class AutocompleteDirective implements OnChanges {
 
         if (event.keyCode == KEY_ENTER || event.keyCode == KEY_TAB) {
           this.stopEvent(event);
-          console.log('event.KeyCode: ', event.keyCode);
+
           const selectedItem = this.autocompleteList.activeItem;
           if (this.replacements.length > 0)
           {
@@ -181,8 +181,7 @@ export class AutocompleteDirective implements OnChanges {
       const textBeforeCursor = val.substring(0, pos) + (charPressed.length == 1 ? charPressed : '');
 
       const tokens = textBeforeCursor.trim().split(/\s+/);
-      console.log('Tokens: ', tokens);
-      console.log(textBeforeCursor);
+
       if (tokens.length != 0 && this.suggestions && this.currentSuggestionIndex != -1) {
 
         var currentSuggestion = this.suggestions[this.currentSuggestionIndex].token;
@@ -273,7 +272,7 @@ export class AutocompleteDirective implements OnChanges {
 
   updateAutocompleteList(items: any[]) {
     if (items) {
-      this.autocompleteList.items = items;
+      this.autocompleteList.items = items.slice(0, Math.min(10, items.length));
     }
 
     this.autocompleteList.hidden = !(this.autocompleteList.items.length > 1);

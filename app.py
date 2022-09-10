@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-with open('data/ngrams_en_US.pickle', 'rb') as handle:
+with open('data/ngram_model.pickle', 'rb') as handle:
     model = pickle.load(handle)
 
 
