@@ -13,6 +13,4 @@ RUN pip install -r requirements.txt
 COPY . .
 COPY --from=node /usr/src/app/frontend/dist/frontend /usr/src/app/static/.
 
-EXPOSE 5000
-
 CMD [ "python", "./app.py" ]
