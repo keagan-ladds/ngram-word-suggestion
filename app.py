@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE in the project root for license information.
 #-----------------------------------------------------------------------------------------
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import pickle
 
@@ -15,9 +15,16 @@ with open('data/ngrams_en_US.pickle', 'rb') as handle:
     model = pickle.load(handle)
 
 
-@app.route("/")
-def hello():
-    return app.send_static_file("index.html")
+
+
+@app.route('/<path:path>', methods=['GET'])
+def static_proxy(path):
+  return send_from_directory('./static', path)
+
+
+@app.route('/')
+def root():
+  return send_from_directory('./static', 'index.html')
 
 @app.route("/api/v1/suggest", methods = ['GET', 'POST'])
 def suggest():
@@ -25,7 +32,8 @@ def suggest():
     phrase = content['text']
     return jsonify(model.suggest(phrase))
 
-app.run(host="0.0.0.0", port=5000, threaded=True)
+if __name__ == '__main__':
+  app.run(host='0.0.0.0', port=5000)
 
 
 
