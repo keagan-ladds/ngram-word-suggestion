@@ -1,7 +1,7 @@
 :host {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 14px;
-  color: #333;
+  color: #fff;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -18,6 +18,10 @@
   margin-top: 8px;
   background-color: #1e1e1e;
   min-height: 250px;
+  border-width: 1px;
+  border-color: #464649;
+  border-style: solid;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .terminal::before {

@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+
+html {
+  background-color: #131C31;
+}
 h1,
 h2,
 h3,
@@ -215,8 +219,8 @@ footer a {
 
 svg#clouds {
   position: fixed;
-  bottom: -160px;
-  left: -230px;
+  bottom: 0px;
+  left: 0px;
   z-index: -10;
   width: 1920px;
 }
