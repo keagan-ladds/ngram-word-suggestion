@@ -13,22 +13,18 @@ class SuggestionModel:
 
     def get_ngram_suggestions(self, tokens):
         n = len(tokens)
-
         nextwords = dict()
         t = dict()
         
-        for i in range(n, 0, -1):
-            if tokens[i-n:n] in self.ngrams:
-                next = self.ngrams[tokens[i-n:n]]['next']
+        for i in range(1, min(n, self.n-1)+1, 1):
+            if tokens[i-n:] in self.ngrams:
+                next = self.ngrams[tokens[i-n:]]['next']
                 for k in next:
                     if k not in t:
-                        t[k] = {'token':k , 'score': next[k]['count']}
+                        t[k] = {'token': k, 'score': next[k]}
                     else:
-                        t[k] = {'token':k , 'score': next[k]['count'] + t[k]['score']}
-
-                if len(next) > 0:
-                    nextwords.update(next) 
-                  
+                        t[k] = {'token': k, 'score': next[k] + t[k]['score']}
+                break
 
         a = sorted(t.values(), key=lambda x: x['score'], reverse=True)  
         a = [x for x in a if x['score'] >= self.thresh]    
@@ -60,37 +56,50 @@ def tokenize(text):
     nltk.download('punkt')
     
 
-    token_list = nltk.word_tokenize(text)
+    token_list = nltk.word_tokenize(text, preserve_line=True)
     token_list2 = [word.replace("'", "") for word in token_list ]
     token_list3 = list(filter(lambda token: nltk.tokenize.punkt.PunktToken(token).is_non_punct, token_list2))
     token_list4=[word.lower() for word in token_list3 ]
     return token_list4
 
+   
+
 def train(tokens, num=3):
     nltk.download('punkt')
     ngrams_list = list(everygrams(tokens, 1, num))
-    print('Total N-grams: ', len(ngrams_list))
-    ngrams_dict = dict()
+    ngram_counts = dict()
+    ngram_probabilities = dict()
 
-    token_count = len(tokens)
+    
 
-    for i in ngrams_list:
-        n = len(i) - 1
-        if i in ngrams_dict:
-            ngrams_dict[i]['count'] += 1/token_count
+    vocabulary = list(set(tokens))
+
+    for ngram in ngrams_list:
+        if ngram in ngram_counts:
+            ngram_counts[ngram] += 1
         else:
-            ngrams_dict[i] = {'count': 1/token_count, 'next': dict()}
+            ngram_counts[ngram] = 1
 
-    for i in ngrams_list:
-        n = len(i) - 1
-        t = i[0:n]  
+    for ngram in ngram_counts:
+        if len(ngram) > 1:
+            previous_ngram = ngram[:-1]
+            ngram_probabilities[ngram] = ngram_counts[ngram] / ngram_counts[previous_ngram]
 
+
+    ngram_dict = dict()
+
+    for ngram in ngrams_list:
+        n = len(ngram) - 1
+
+        t = ngram[0:n]
         if len(t) > 0:
-            if i[n] in ngrams_dict[t]['next']:
-                ngrams_dict[t]['next'][i[n]]['count'] += 1/token_count
+            if t in ngram_dict:
+                ngram_dict[t]['next'][ngram[n]] =  ngram_probabilities[ngram]
             else:
-                ngrams_dict[t]['next'][i[n]] = {'count': 1/token_count}
-    return SuggestionModel(ngrams_dict, num)
+                ngram_dict[t] = {'next':dict()}
+                ngram_dict[t]['next'][ngram[n]] = ngram_probabilities[ngram]
+
+    return SuggestionModel(ngram_dict, num)
     
 
    
