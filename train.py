@@ -15,7 +15,7 @@ print(nltk.corpus.gutenberg.fileids())
 
 raw_text = nltk.corpus.gutenberg.raw('austen-emma.txt')
 
-tokens = suggestion.tokenize(raw_text)
+tokens = suggestion.tokenize(raw_text, pad_start=True, pad_end=True)
 model = suggestion.train(tokens, num=5)
 
 print("\nSample token list : ", tokens[:10])
